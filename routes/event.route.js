@@ -13,7 +13,7 @@ EventRouter.get("/allques",async (req,res)=>{
     res.send(data)
 })
 
-EventRouter.get("/getAns",async(req,res)=>{
+EventRouter.post("/getAns",async(req,res)=>{
     //res.send("ok")
     let {code} = req.body
     let data =  await AnsModel.findOne({eventCode:code})
