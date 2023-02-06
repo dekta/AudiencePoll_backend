@@ -14,9 +14,8 @@ EventRouter.get("/allques",async (req,res)=>{
 })
 
 EventRouter.post("/getAns",async(req,res)=>{
-    //res.send("ok")
     let {code} = req.body
-    let data =  await AnsModel.findOne({eventCode:code})
+    let data =  await AnsModel.find({eventCode:code})
     if(data){
         res.send(data)
     }
