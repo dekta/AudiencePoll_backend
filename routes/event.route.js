@@ -1,6 +1,7 @@
 const express = require("express");
 
 const {EventModel} = require("../models/event.model");
+const {AnsModel} =  require("../models/ans.model")
 
 const EventRouter = express.Router();
 
@@ -14,12 +15,14 @@ EventRouter.get("/allques",async (req,res)=>{
 
 EventRouter.get("/getAns",async(req,res)=>{
     res.send("ok")
-    //let code = req.code
-    // let data =  await AnsModel.find({})
-    // res.send(data)
-    // if(data.eventCode==code){
-    //     res.send(data)
-    // }
+    let {code} = req.body
+    let data =  await AnsModel.findOne({eventCode:code})
+    if(data){
+        res.send(data)
+    }
+    else{
+        res.send("code not valid")
+    }
     
 })
 
