@@ -75,7 +75,7 @@ io.on("connection",(socket)=>{
             eventCode,
             question
         }
-        io.emit("msg",obj)
+        io.broadcast.emit("msg",obj)
         
     })
 
