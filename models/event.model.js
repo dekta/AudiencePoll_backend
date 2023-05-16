@@ -1,17 +1,13 @@
 let mongoose =  require("mongoose")
 
 let eventSchema = mongoose.Schema({
-    EventId:Number,
-    eventCode:Number,
-    startDate:{type:Date},
-    endDate:Date,
+    userEmail:String,
+    eventId:Number,
     eventName:String,
-    pollType:String,
-    eventLink:String,
     question:String,
-    pollDescription:String,
-    liveResult:String,
-    votes:Number
+    endTime:Date,
+    answers:[{ type: Object }],
+    votes:{type:Number,default:0}
 })
 
 let EventModel = mongoose.model("event",eventSchema)

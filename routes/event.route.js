@@ -1,29 +1,49 @@
 const express = require("express");
-
+const jwt = require("jsonwebtoken")
 const {EventModel} = require("../models/event.model");
-const {AnsModel} =  require("../models/ans.model")
 
 const EventRouter = express.Router();
 
 EventRouter.use(express.json())
 
 
-EventRouter.get("/allques",async (req,res)=>{
-    let data = await EventModel.find()
-    res.send(data)
-})
-
-EventRouter.post("/getAns",async(req,res)=>{
-    let {code} = req.body
-    let data =  await AnsModel.find({eventCode:code})
-    if(data){
-        res.send(data)
+EventRouter.post("/allques",async (req,res)=>{
+    let {token} =  req.body
+   // console.log("all",token)
+    if (!token) {
+        res.status(401).send({ error: 'Authorization token not provided , please login' });
+        return;
     }
-    else{
-        res.send("code not valid")
-    }
+    jwt.verify(token,"LoginKey",async (err, decoded) => {
+        if (err) {
+          res.status(401).send({ error: 'Invalid token' });
+          return;
+        }
+        const userEmail = decoded.email;
+        //console.log(userEmail)
+        let data = await EventModel.find({userEmail})
+        console.log(data)
+        res.status(200).send(data)
+    })
+    
+    
     
 })
+
+EventRouter.post("/ques",async(req,res)=>{
+    const {eventId,eventName,question,time,userEmail} = req.body
+    try{
+        let event = new EventModel( {eventId,eventName,question,time,userEmail})
+        await event.save()
+        res.send({"msg":"event created"})
+    }
+    catch(err){
+        res.send(err)
+    }
+})
+
+
+
 
 
 
