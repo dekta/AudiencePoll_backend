@@ -108,25 +108,30 @@ io.on("connection",(socket) => {
 
 
   socket.on("msg", async(answer, eventId,user) => {
-    
+
     let obj = {[user]:answer}
-    
     const specificEvent = events?.filter(
       (ele) => Object.keys(ele) == String(eventId)
     );
-    specificEvent[0][eventId].answer.push(obj)
-    socket.join(eventId);
 
-    EventModel.updateOne({ eventId }, { $push: { answers: obj } }, (err, result) => {
-      if (err) {
-        console.error("Error adding answer:", err);
-      } else {
-        console.log("Answer added successfully:", result);
-      }
-    });
+    if(answer!=="welcome"){
 
-    
-    io.to(eventId).emit("globalEventMessage", specificEvent);
+      specificEvent[0][eventId].answer.push(obj)
+      socket.join(eventId);
+
+      EventModel.updateOne({ eventId }, { $push: { answers: obj } }, (err, result) => {
+        if (err) {
+          console.error("Error adding answer:", err);
+        } else {
+          console.log("Answer added successfully:", result);
+          }
+      }) 
+
+        io.to(eventId).emit("globalEventMessage", specificEvent);
+    }
+    else{
+      io.to(eventId).emit("globalEventMessage", specificEvent);
+    }
     
   });
 
