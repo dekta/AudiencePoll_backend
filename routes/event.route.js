@@ -6,9 +6,9 @@ const EventRouter = express.Router();
 
 EventRouter.use(express.json());
 
+// all events routes
 EventRouter.post("/allques", async (req, res) => {
   let { token } = req.body;
-  // console.log("all",token)
   if (!token) {
     res
       .status(401)
@@ -28,6 +28,7 @@ EventRouter.post("/allques", async (req, res) => {
   });
 });
 
+// event Created
 EventRouter.post("/ques", async (req, res) => {
   const { eventId, eventName, question, time, userEmail } = req.body;
   try {
@@ -45,6 +46,8 @@ EventRouter.post("/ques", async (req, res) => {
   }
 });
 
+
+// added answer in event
 EventRouter.post("/ans", async (req, res) => {
   const { userEmail, eventId } = req.body;
   try{
@@ -60,6 +63,28 @@ EventRouter.post("/ans", async (req, res) => {
     res.status(501).send({"error":"server side error"})
   }
 });
+
+
+// update status
+EventRouter.patch("/status", async (req, res) => {
+  const {userEmail,eventId} = req.body;
+  try{
+    let event = await EventModel.findOne({userEmail,eventId})
+    if(event){
+        let update = {Status:"Expired"}
+        let filter = {eventId}
+        await EventModel.findOneAndUpdate(filter,update)
+        res.status(200).send({"msg":"Status updated"})
+    }
+    else{
+        res.status(501).send({"msg":"no event"})
+    }
+  }
+  catch(err){
+    res.status(501).send({"error":"server side error"})
+  }
+});
+
 
 
 
